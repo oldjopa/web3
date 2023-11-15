@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:faces="jakarta.faces"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:pt="jakarta.faces.passthrough"
+      xmlns:cc="jakarta.faces.composite"
+      xmlns:my="jakarta.faces.component"
+      xmlns:c="jakarta.tags.core"
+      xmlns:fn="jakarta.tags.functions"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>web1</title>
+    <!--    <link rel="stylesheet" href="css/styles.css" type="text/css"/>-->
+    <h:outputStylesheet library="css" name="styles.css"/>
+    <!--    <script src="js/main.js" type="text/javascript"></script>-->
+    <!--    <script src="js/graphTools.js" type="text/javascript"></script>-->
+
+</h:head>
+<h:body>
+    <div id="color">
+        <div id="header" class="container">
+            <h2>Янковой Леонид</h2>
+            <h2>P3232</h2>
+            <h2>1314</h2>
+            <h:form action='clock' id="mapper_form">
+                <h:commandButton class="myButton" id="remap" action='clock' value="назад">
+                </h:commandButton>
+            </h:form>
+        </div>
+    </div>
+    <div id="body">
+        <div class="container">
+            <div>
+                <div>
+                    <h:form id="hidden-canvas-form">
+                        <h:commandLink onclick="return onCanvasClick(event);" action="#{results.addPoint()}">
+                            <canvas id="myCanvas" width="400" height="400"></canvas>
+                            <f:ajax execute="@form" render="table-text"/>
+                        </h:commandLink>
+                        <h:inputHidden id="x" value="#{results.point.x}"/>
+                        <h:inputHidden id="y" value="#{results.point.y}"/>
+                        <h:inputHidden id="r" value="#{results.point.r}"/>
+                    </h:form>
+                </div>
+                <div id="bean_x" style="display: none;">#{results.point.x}</div>
+                <h:form id="input-form">
+                    <div id="form" style="display: flex; flex-direction: column;">
+                        <b>Enter X:</b>
+                        <br/>
+                        <div style="display: flex;">
+                            <h:commandLink class="commandLink" name="x_coordinate" value="3" action="#{results.point.setX(3)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                            <h:commandLink class="commandLink" name="x_coordinate" value="2" action="#{results.point.setX(2)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                            <h:commandLink class="commandLink" name="x_coordinate" value="1" action="#{results.point.setX(1)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                            <h:commandLink class="commandLink" name="x_coordinate" value="0" action="#{results.point.setX(0)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                            <h:commandLink class="commandLink" name="x_coordinate" value="-1" action="#{results.point.setX(-1)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                            <h:commandLink class="commandLink" name="x_coordinate" value="-2" action="#{results.point.setX(-2)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                            <h:commandLink class="commandLink" name="x_coordinate" value="-3" action="#{results.point.setX(-3)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                            <h:commandLink class="commandLink" name="x_coordinate" value="-4" action="#{results.point.setX(-4)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                            <h:commandLink class="commandLink" name="x_coordinate" value="-5" action="#{results.point.setX(-5)}">
+                                <f:ajax execute="@form" render="table-text"/>
+                            </h:commandLink>
+                        </div>
+                        <br/>
+                        <div>
+                            <b>Enter Y:</b><br/>
+                            <p:spinner value="#{results.point.y}" type="number" id="y_spinner" decimalSeparator="." name="spinner" stepFactor="0.5"
+                                       min="-3" max="3" onchange="radiusChange()">
+                                <f:validateDoubleRange minimum="-3" maximum="3" step="0.1"/>
+                            </p:spinner>
+                        </div>
+                        <br/>
+                        <div>
+                            <b>Enter R:</b><br/>
+                            <p:spinner value="#{results.point.r}" type="number" id="r_spinner" decimalSeparator="." name="spinner" stepFactor="0.1"
+                                         min="0.1" max="3" onchange="radiusChange()">
+                                        <f:validateDoubleRange minimum="0.1" maximum="3" step="0.1"/>
+                                    </p:spinner>
+                        </div>
+                    </div>
+                    <div>
+                        <h:commandButton class="myButton" action="#{results.addPoint()}" value="Submit">
+                            <f:ajax execute="@form" render="table-text"/>
+                        </h:commandButton>
+
+                    </div>
+                </h:form>
+            </div>
+            <div id="table">
+                <div class="table-offset-container">
+                    <h:panelGroup layout="block" styleClass="table-container" id="table-text">
+                        <p:dataTable id="dots-table" var="result" value="#{results.getResults()}"
+                                     rowStyleClass="#{result.hit ? 'success' : 'fail'}"
+                                     resizableColumns="true"
+                                     scrollable="true"
+                                     scrollHeight="600">
+                            <p:column headerText="x" width="1">
+                                <h:outputText value="#{result.x}"/>
+                            </p:column>
+
+                            <p:column headerText="y" width="1">
+                                <h:outputText value="#{result.y}"/>
+                            </p:column>
+
+                            <p:column headerText="r" width="1">
+                                <h:outputText value="#{result.r}"/>
+                            </p:column>
+
+                            <p:column headerText="Дата и время" width="50">
+                                <h:outputText value='#{result.timeAccess}'/>
+                            </p:column>
+
+                            <p:column width="40">
+                                <f:facet name="header">
+                                    <h:outputText value="Время&lt;br/&gt;выполнения, ms" escape="false"/>
+                                </f:facet>
+                                <h:outputText value="#{result.timeExecution}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
+                </div>
+
+                <div id="clear">
+                    <h:form>
+                        <h:commandButton name="clear-button" class="myButton" action='#{results.clear()}' onclick="drawCanvas(0.1);" value="clear">
+                            <f:ajax execute="@form" render="table-text"/>
+                        </h:commandButton>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h:outputScript library="js" name="graphTools.js" target="body"/>
+    <h:outputScript library="js" name="main.js" target="body"/>
+</h:body>
+</html>

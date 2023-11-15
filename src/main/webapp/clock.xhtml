@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:faces="jakarta.faces" xmlns:ui="jakarta.faces.facelets" xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html" xmlns:pt="jakarta.faces.passthrough" xmlns:cc="jakarta.faces.composite"
+      xmlns:my="jakarta.faces.component" xmlns:c="jakarta.tags.core" xmlns:fn="jakarta.tags.functions"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>web3</title>
+    <h:outputStylesheet library="css" name="styles.css"/>
+    <h:outputStylesheet library="css" name="clock.css"/>
+</h:head>
+<h:body>
+    <div id="color">
+        <div id="header">
+            <h2>Янковой Леонид</h2>
+            <h2>P3232</h2>
+            <h2>1314</h2>
+        </div>
+    </div>
+    <div id="body">
+        <div class="flex-container">
+            <img class="cat-img" src="resources/img/popich.png"/>
+            <canvas id="canvas" width="400" height="400"/>
+            <img class="cat-img" src="resources/img/popich2.jpg"/>
+        </div>
+        <div class="container" style="margin-top: 50px;">
+            <h:form action='main' id="mapper_form">
+                <h:commandButton class="myButton" id="remap" action='main' value="вперед">
+                </h:commandButton>
+            </h:form>
+        </div>
+
+    </div>
+    <h:outputScript library="js" name="clock.js" target="body"/>
+</h:body>
+
+</html>

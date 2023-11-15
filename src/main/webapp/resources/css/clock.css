@@ -1,0 +1,28 @@
+canvas {
+  margin:0 auto;
+  display:block;
+  background-color:beige;
+}
+#controls {
+  border:2px solid red;
+  margin:10px;
+  position:absolute;
+  top:0;
+  right:0;
+  width:150px;
+  background-color:bisque;
+  height:400px;
+  padding:20px;
+  color:white;
+}
+#controls > div {
+  margin:4px 0 10px;
+}
+.flex-container{
+  display: flex;
+}
+
+.cat-img{
+  width: 400px;
+  height: 400px;
+}
