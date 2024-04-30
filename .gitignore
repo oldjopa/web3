@@ -1,2 +1,3 @@
 /target/
 /.idea/
+/src/resources/META_INF/persistence.xml

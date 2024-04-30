@@ -45,7 +45,10 @@ function drawPoint(x, y, color) {
 }
 
 function radiusChange() {
-  drawCanvas(document.getElementById("input-form:r_spinner_input").value);
+  var r= document.getElementById("input-form:r_spinner_input").value;
+  if(r>3){r=3;}
+  if(r<0.1){r=0.1;}
+  drawCanvas(r);
   drawPoints(true);
 }
 
