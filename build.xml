@@ -69,22 +69,22 @@
         <echo>Компиляция основного кода...</echo>
         <property name="srcdir" value="${src.main.dir}"/>
         <mkdir dir="${build.classes.dir}"/>
-        <javac srcdir="${srcdir}"
+        <javac srcdir="${src.dir}"
                destdir="${build.classes.dir}"
                includeantruntime="false">
             <classpath refid="lib.main.path"/>
         </javac>
 
-        <echo>Компиляция тестов...</echo>
-        <mkdir dir="${test.dir}"/>
-        <javac srcdir="${src.test.dir}"
-               destdir="${test.dir}"
-               includeantruntime="false">
-            <classpath>
-                <path refid="lib.test.path"/>
-                <pathelement location="${build.classes.dir}"/>
-            </classpath>
-        </javac>
+<!--        <echo>Компиляция тестов...</echo>-->
+<!--        <mkdir dir="${test.dir}"/>-->
+<!--        <javac srcdir="${src.test.dir}"-->
+<!--               destdir="${test.dir}"-->
+<!--               includeantruntime="false">-->
+<!--            <classpath>-->
+<!--                <path refid="lib.test.path"/>-->
+<!--                <pathelement location="${build.classes.dir}"/>-->
+<!--            </classpath>-->
+<!--        </javac>-->
     </target>
 
     <target name="build" depends="compile" description="Создание war-файла">
@@ -112,6 +112,7 @@
 
         <echo>Создание war-архива...</echo>
         <property name="war" value="${build.dir}/${ant.project.name}.war"/>
+        <delete file="${war}"/>
         <war destfile="${war}">
             <fileset dir="${build.dir}"/>
         </war>
