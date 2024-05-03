@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import static utils.GraphHitChecker.checkHit;
 
 @Entity
 //@Table(name = "CheckResults")
@@ -38,14 +39,8 @@ public class CheckResult implements Serializable {
         this.x = point.getX();
         this.y = point.getY();
         this.r = point.getR();
-        hit = checkHit();
+        hit = checkHit(x,y,r);
         timeExecution = (System.nanoTime() - timeStart) / 1000;
-    }
-
-    private boolean checkHit(){
-        return (x >= 0 && y < 0 && x *x + y *y < r *r) ||
-                (x >= 0 && y >= 0 && x < r && y < r / 2) ||
-                (x < 0 && y < 0 && x + y + r/2 > 0);
     }
 
     public Float getX() {
@@ -53,7 +48,7 @@ public class CheckResult implements Serializable {
     }
 
     public void setX(Float x) {
-        System.out.println(x);
+//        System.out.println(x);
         this.x = x;
     }
 

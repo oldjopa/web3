@@ -152,30 +152,6 @@
         </junitlauncher>
     </target>
 
-    <target name="doc" depends="build" description="Генерация javadoc и добавление в MANIFEST.MF MD5 и SHA-1 файлов проекта">
-        <mkdir dir="${doc.dir}"/>
-
-        <echo>Генерация SHA1 хешей...</echo>
-        <generate-hash algorithm="SHA1"/>
-        <echo>Генерация MD5 хешей...</echo>
-        <generate-hash algorithm="MD5"/>
-
-        <echo>Генерация javadoc...</echo>
-        <javadoc destdir="${doc.dir}"
-                 author="true"
-                 version="true"
-                 use="true">
-            <classpath refid="lib.main.path"/>
-            <fileset dir="${src.main.dir}"/>
-        </javadoc>
-
-        <echo>Сборка jar-архива с javadoc...</echo>
-        <jar destfile="${doc.dir}/JavaDoc.jar"
-             basedir="${doc.dir}"
-             update="true">
-        </jar>
-    </target>
-
     <target name="music" description="Воспроизведение музыки после сборки war-файла">
         <sound>
             <success source="${music.success.file}"/>
@@ -253,24 +229,24 @@
         </if>
     </target>
 
-    <target name="team" description="Получение из git-репозитория 2 предыдущих ревизии, их сборка и упаковка в zip-архив">
-        <echo>Создание временной директории для файлов ревизий...</echo>
+    <target name="team" description="get and build 4 prev revisions, pack war into zip">
+        <echo>Creating temp dir...</echo>
         <tempfile property="temp.dir" destdir="${java.io.tmpdir}" prefix="ant"/>
         <mkdir dir="${temp.dir}"/>
 
-        <for param="i" begin="1" end="2">
+        <for param="i" begin="1" end="4">
             <sequential>
-                <echo>Ревизия #@{i}:</echo>
-                <echo>Копирование файлов ревизии во временную директорию...</echo>
+                <echo>Rev #@{i}:</echo>
+                <echo>Copying into temp dir...</echo>
                 <git-copy-commit commit="HEAD~@{i}" dest="${temp.dir}/@{i}.zip"/>
                 <unzip src="${temp.dir}/@{i}.zip" dest="${temp.dir}"/>
 
-                <echo>Сборка war-архива...</echo>
+                <echo>Building war...</echo>
                 <ant antfile="${ant.file}" target="build" dir="${temp.dir}"/>
                 <copy file="${temp.dir}/build/${ant.project.name}.war"
                       tofile="${temp.dir}/${ant.project.name}-Prev@{i}.war"/>
 
-                <echo>Очистка файлов ревизии во временной директории...</echo>
+                <echo>Cleanup...</echo>
                 <delete>
                     <fileset dir="${temp.dir}">
                         <exclude name="*.war"/>
@@ -279,31 +255,20 @@
             </sequential>
         </for>
 
-        <echo>Упаковка собранных war-архивов в zip-архив...</echo>
+        <echo>Packing wars into zip...</echo>
         <zip destfile="${build.dir}/${ant.project.name}-Team.zip"
              basedir="${temp.dir}"
              includes="*.war"/>
     </target>
 
-    <target name="alt" description="Создание версии программы с измененными именами переменных и классов по указанному регулярному выражению">
-        <echo>Создание временной директории и копирование исходных файлов...</echo>
-        <tempfile property="temp.dir" destdir="${java.io.tmpdir}" prefix="ant"/>
-        <copy todir="${temp.dir}">
-            <fileset dir="${src.main.dir}" includes="**/*.java"/>
-        </copy>
+    <target name="history" description="Building the newest buildable revision, then show difference with next revision">
 
-        <echo>Изменение имен переменных и классов в соответствии с регулярным выражением...</echo>
-        <replaceregexp match="${alt.regex}"
-                       flags="${alt.regex.flags}"
-                       replace="${alt.replace}">
-            <fileset dir="${temp.dir}" includes="**/*.java"/>
-        </replaceregexp>
-
-        <echo>Сборка war-архива с альтернативной версией программы...</echo>
-        <antcall target="build">
-            <param name="srcdir" value="${temp.dir}"/>
-            <param name="war" value="${build.dir}/${ant.project.name}-Alt.war"/>
-        </antcall>
     </target>
 
+    <target name="report" description="If all test pass then create junit, git add and commit">
+
+    </target>
+    <target name="xml" description="Validate all xml in project">
+
+    </target>
 </project>
