@@ -14,15 +14,15 @@
         <fileset dir="${lib.test.dir}" includes="**/*.jar"/>
     </path>
 
-    <macrodef name="generate-hash" description="Генерация хешей файлов проекта и запись в MANIFEST.MF">
-        <attribute name="algorithm"/>
-        <sequential>
-            <signjar jar="${build.dir}/${ant.project.name}.war"
-                     alias="ant_keystore"
-                     storepass="password"
-                     digestalg="@{algorithm}"/>
-        </sequential>
-    </macrodef>
+<!--    <macrodef name="generate-hash" description="Генерация хешей файлов проекта и запись в MANIFEST.MF">-->
+<!--        <attribute name="algorithm"/>-->
+<!--        <sequential>-->
+<!--            <signjar jar="${build.dir}/${ant.project.name}.war"-->
+<!--                     alias="ant_keystore"-->
+<!--                     storepass="password"-->
+<!--                     digestalg="@{algorithm}"/>-->
+<!--        </sequential>-->
+<!--    </macrodef>-->
 
     <macrodef name="svn-commit" description="Добавление файлов и совершение коммита в репозиторий svn">
         <sequential>
@@ -273,8 +273,23 @@
 
     </target>
 
-    <target name="report" description="If all test pass then create junit, git add and commit">
-
+    <target name="report" depends="test" description="If all test pass then create junit, git add and commit">
+<!--        <mkdir dir="${doc.dir}"/>-->
+        <mkdir dir="${doc.report.dir}"/>
+        <copy todir="${doc.report.dir}">
+            <fileset dir="${test.dir}" includes="*.txt"/>
+        </copy>
+        <sequential>
+            <exec executable="git">
+                <arg value="add"/>
+                <arg value="${doc.report.dir}/*"/>
+            </exec>
+            <exec executable="git">
+                <arg value="commit"/>
+                <arg value="-m"/>
+                <arg value="passed tests"/>
+            </exec>
+        </sequential>
     </target>
 
 </project>
