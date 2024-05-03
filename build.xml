@@ -3,7 +3,12 @@
 
     <property file="build.properties"/>
 
-    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+    <property name="ant-contrib.jar" location="lib/main/ant-contrib-1.0b3.jar"/>
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="${ant-contrib.jar}"/>
+        </classpath>
+    </taskdef>
 
     <path id="lib.main.path">
         <fileset dir="${lib.main.dir}" includes="**/*.jar"/>
@@ -14,15 +19,6 @@
         <fileset dir="${lib.test.dir}" includes="**/*.jar"/>
     </path>
 
-<!--    <macrodef name="generate-hash" description="Генерация хешей файлов проекта и запись в MANIFEST.MF">-->
-<!--        <attribute name="algorithm"/>-->
-<!--        <sequential>-->
-<!--            <signjar jar="${build.dir}/${ant.project.name}.war"-->
-<!--                     alias="ant_keystore"-->
-<!--                     storepass="password"-->
-<!--                     digestalg="@{algorithm}"/>-->
-<!--        </sequential>-->
-<!--    </macrodef>-->
 
     <macrodef name="svn-commit" description="Добавление файлов и совершение коммита в репозиторий svn">
         <sequential>
@@ -238,38 +234,6 @@
     </target>
 
     <target name="team" description="get and build 4 prev revisions, pack war into zip">
-        <echo>Creating temp dir...</echo>
-        <tempfile property="temp.dir" destdir="${java.io.tmpdir}" prefix="ant"/>
-        <mkdir dir="${temp.dir}"/>
-
-        <for param="i" begin="1" end="4">
-            <sequential>
-                <echo>Rev #@{i}:</echo>
-                <echo>Copying into temp dir...</echo>
-                <git-copy-commit commit="HEAD~@{i}" dest="${temp.dir}/@{i}.zip"/>
-                <unzip src="${temp.dir}/@{i}.zip" dest="${temp.dir}"/>
-
-                <echo>Building war...</echo>
-                <ant antfile="${ant.file}" target="build" dir="${temp.dir}"/>
-                <copy file="${temp.dir}/build/${ant.project.name}.war"
-                      tofile="${temp.dir}/${ant.project.name}-Prev@{i}.war"/>
-
-                <echo>Cleanup...</echo>
-                <delete>
-                    <fileset dir="${temp.dir}">
-                        <exclude name="*.war"/>
-                    </fileset>
-                </delete>
-            </sequential>
-        </for>
-
-        <echo>Packing wars into zip...</echo>
-        <zip destfile="${build.dir}/${ant.project.name}-Team.zip"
-             basedir="${temp.dir}"
-             includes="*.war"/>
-    </target>
-
-    <target name="history" description="Building the newest buildable revision, then show difference with next revision">
 
     </target>
 
@@ -292,4 +256,39 @@
         </sequential>
     </target>
 
+
+    <target name="history" description="Building the newest buildable revision, then show difference with next revision">
+        <antcall target="compile-with-history"/>
+    </target>
+
+    <property name="revision.file" value="last_successful_revision.txt"/>
+    <property name="diff.file" value="diff_result.txt"/>
+
+    <target name="compile-with-history">
+        <trycatch>
+            <try>
+                <antcall target="compile"/>
+            </try>
+            <catch>
+                <echo message="Compilation failed, trying to revert to previous version from SVN..."/>
+                <antcall target="revert-to-previous-revision"/>
+                <antcall target="compile"/>
+            </catch>
+        </trycatch>
+    </target>
+
+    <target name="revert-to-previous-revision">
+        <loadfile property="last_successful_revision" srcFile="${revision.file}" />
+        <propertyregex property="previous_revision" input="${last_successful_revision}" regexp="(\d+)" select="\1" />
+        <math result="previous_revision" operand1="${previous_revision}" operation="sub" operand2="1"/>
+        <exec executable="${svn.executable}">
+            <arg line="update -r ${previous_revision}"/>
+        </exec>
+    </target>
+
+    <target name="generate-diff">
+        <exec executable="${svn.executable}" output="${diff.file}">
+            <arg line="diff -r ${last_successful_revision}:${previous_revision}"/>
+        </exec>
+    </target>
 </project>
