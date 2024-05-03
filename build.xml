@@ -233,27 +233,48 @@
         </if>
     </target>
 
-    <target name="team" description="get and build 4 prev revisions, pack war into zip">
+    <target name="team">
+        <!--        <for param="i" begin="1" end="4">
+                    <sequential>-->
+        <property name="war" value="${build.dir}/${ant.project.name}.war"/>
+        <delete dir="${temp.dir}"/>
 
-    </target>
+        <mkdir dir="${temp.dir}"/>
 
-    <target name="report" depends="test" description="If all test pass then create junit, git add and commit">
-<!--        <mkdir dir="${doc.dir}"/>-->
-        <mkdir dir="${doc.report.dir}"/>
-        <copy todir="${doc.report.dir}">
-            <fileset dir="${test.dir}" includes="*.txt"/>
-        </copy>
-        <sequential>
-            <exec executable="git">
-                <arg value="add"/>
-                <arg value="${doc.report.dir}/*"/>
-            </exec>
-            <exec executable="git">
-                <arg value="commit"/>
-                <arg value="-m"/>
-                <arg value="passed tests"/>
-            </exec>
-        </sequential>
+        <echo>Ревизия #1:</echo>
+        <exec executable="${svn.executable}">
+            <arg line="checkout -r HEAD:HEAD~3 ${svn.repository.url} ${temp.dir}"/>
+        </exec>
+        <antcall target="build"/>
+        <!--                 <mkdir dir="${temp.dir}/r1"/> -->
+        <copy file="${war}" tofile="${temp.dir}/r1/${war}"/>
+
+        <echo>Ревизия #2:</echo>
+        <exec executable="${svn.executable}">
+            <arg line="checkout -r HEAD:HEAD~2 ${svn.repository.url} ${temp.dir}"/>
+        </exec>
+        <antcall target="build"/>
+        <copy file="${war}" tofile="${temp.dir}/r2/${war}"/>
+
+        <echo>Ревизия #3:</echo>
+        <exec executable="${svn.executable}">
+            <arg line="checkout -r HEAD:HEAD~1 ${svn.repository.url} ${temp.dir}"/>
+        </exec>
+        <antcall target="build"/>
+        <copy file="${war}" tofile="${temp.dir}/r3/${war}"/>
+
+        <echo>Ревизия #4:</echo>
+        <exec executable="${svn.executable}">
+            <arg line="checkout -r HEAD:HEAD ${svn.repository.url} ${temp.dir}"/>
+        </exec>
+        <antcall target="build"/>
+        <copy file="${war}" tofile="${temp.dir}/r4/${war}"/>
+
+        <zip destfile="${output.zip}">
+            <fileset dir="${temp.dir}"/>
+        </zip>
+        <!--            </sequential>
+                </for>-->
     </target>
 
 
@@ -291,4 +312,25 @@
             <arg line="diff -r ${last_successful_revision}:${previous_revision}"/>
         </exec>
     </target>
+
+    <target name="report" depends="test" description="If all test pass then create junit, git add and commit">
+        <!--        <mkdir dir="${doc.dir}"/>-->
+        <mkdir dir="${doc.report.dir}"/>
+        <copy todir="${doc.report.dir}">
+            <fileset dir="${test.dir}" includes="*.txt"/>
+        </copy>
+        <sequential>
+            <exec executable="git">
+                <arg value="add"/>
+                <arg value="${doc.report.dir}/*"/>
+            </exec>
+            <exec executable="git">
+                <arg value="commit"/>
+                <arg value="-m"/>
+                <arg value="passed tests"/>
+            </exec>
+        </sequential>
+    </target>
+
+
 </project>

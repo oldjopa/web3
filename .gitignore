@@ -2,3 +2,4 @@
 /.idea/
 /src/resources/META_INF/persistence.xml
 /build/
+/src/main/resources/native2ascii/
