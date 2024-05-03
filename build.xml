@@ -228,6 +228,13 @@
         </trycatch>
     </target>
 
+    <target name="xml" description="Проверка валидности xml">
+        <echo>Проверка валидности xml</echo>
+        <xmlvalidate lenient="yes">
+            <fileset dir="." includes="*/*.xml"/>
+        </xmlvalidate>
+    </target>
+
     <target name="diff" description="Совершение коммита в репозиторий svn, если изменения не касаются указанных классов">
         <echo>Получение списка измененных файлов...</echo>
         <svn-status outputproperty="diff.status"/>
