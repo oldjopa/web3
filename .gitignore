@@ -1,3 +1,4 @@
 /target/
 /.idea/
 /src/resources/META_INF/persistence.xml
+/src/main/resources/native2ascii/
