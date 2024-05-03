@@ -162,13 +162,13 @@
         <echo>Воспроизведение звукового файла...</echo>
     </target>
 
-    <target name="scp" depends="build" description="Сборка и перемещение собранного war-архива по scp на сервер">
-        <input message="Введите пароль: " addproperty="scp.password">
+    <target name="scp" depends="build" description="build and move war to server via scp">
+        <input message="Password: " addproperty="scp.password">
             <handler type="secure"/>
         </input>
         <trycatch>
             <try>
-                <echo>Соединение и отправка war-архива на сервер...</echo>
+                <echo>Connecting...</echo>
                 <scp file="${build.dir}/${ant.project.name}.war"
                      todir="${scp.user}@${scp.host}:${scp.dir}"
                      password="${scp.password}"
@@ -176,7 +176,7 @@
                      trust="true"/>
             </try>
             <catch>
-                <fail message="Не удалось подключиться к серверу."/>
+                <fail message="Failed to connect to server"/>
             </catch>
         </trycatch>
     </target>
@@ -187,10 +187,10 @@
                       includes="**/*.properties"/>
     </target>
 
-    <target name="env" depends="scp" description="Сборка и перемещение собранного war-архива по scp на сервер, а также запуск веб-сервера">
+    <target name="env" depends="scp" description="build and move war to server via scp, web server start">
         <trycatch>
             <try>
-                <echo>Запуск веб-сервера...</echo>
+                <echo>Starting web server...</echo>
                 <sshexec host="${scp.host}"
                          username="${scp.user}"
                          password="${scp.password}"
@@ -199,7 +199,7 @@
                          command="sh ${env.script}"/>
             </try>
             <catch>
-                <fail message="Не удалось подключиться к серверу."/>
+                <fail message="Failed to connect to server"/>
             </catch>
         </trycatch>
     </target>
