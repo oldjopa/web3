@@ -65,8 +65,8 @@
         </sequential>
     </macrodef>
 
-    <target name="compile" description="Компиляция кода проекта">
-        <echo>Компиляция основного кода...</echo>
+    <target name="compile" description="Compile">
+        <echo>Compiling code...</echo>
         <property name="srcdir" value="${src.main.dir}"/>
         <mkdir dir="${build.classes.dir}"/>
         <javac srcdir="${srcdir}"
@@ -75,7 +75,7 @@
             <classpath refid="lib.main.path"/>
         </javac>
 
-        <echo>Компиляция тестов...</echo>
+        <echo>Compiling tests...</echo>
         <mkdir dir="${test.dir}"/>
         <javac srcdir="${src.test.dir}"
                destdir="${test.dir}"
@@ -87,30 +87,30 @@
         </javac>
     </target>
 
-    <target name="build" depends="compile" description="Создание war-файла">
-        <echo>Копирование библиотек приложения в WEB-INF/lib...</echo>
+    <target name="build" depends="compile" description="Build war">
+        <echo>Copying project libs into WEB-INF/lib...</echo>
         <copy todir="${build.web-inf.lib}">
             <path refid="lib.main.path"/>
         </copy>
 
-        <echo>Копирование всех файлов в WEB-INF...</echo>
+        <echo>Copying all files into WEB-INF...</echo>
         <copy todir="${build.web-inf}">
             <fileset dir="${src.main.web}/WEB-INF"/>
         </copy>
 
-        <echo>Копирование ресурсов...</echo>
+        <echo>Copying resources...</echo>
         <copy todir="${build.classes.dir}">
             <fileset dir="${src.main.resources}"/>
         </copy>
 
-        <echo>Копирование всех статических файлов в корень war-архива, игнорируя директорию WEB-INF...</echo>
+        <echo>Copying all static files into war...</echo>
         <copy todir="${build.dir}">
             <fileset dir="${src.main.web}">
                 <exclude name="WEB-INF/**"/>
             </fileset>
         </copy>
 
-        <echo>Создание war-архива...</echo>
+        <echo>Creating war...</echo>
         <property name="war" value="${build.dir}/${ant.project.name}.war"/>
         <war destfile="${war}">
             <fileset dir="${build.dir}"/>
@@ -118,20 +118,20 @@
     </target>
 
     <target name="clean" description="Удаление скомпилированных файлов">
-        <echo>Удаление директории с классами...</echo>
+        <echo>RM classes dir...</echo>
         <delete dir="${build.dir}"/>
-        <echo>Удаление директории с тестами...</echo>
+        <echo>RM tests dir...</echo>
         <delete dir="${test.dir}"/>
-        <echo>Удаление директории с документами...</echo>
-        <delete dir="${doc.dir}"/>
-        <echo>Удаление директории с native2ascii ресурсами...</echo>
+<!--        <echo>Удаление директории с документами...</echo>-->
+<!--        <delete dir="${doc.dir}"/>-->
+        <echo>RM native2ascii dir...</echo>
         <delete dir="${native2ascii.resources}"/>
     </target>
 
-    <target name="test" depends="build" description="Компиляция и выполнение тестов">
-        <echo>Создание директории для отчетов по тестам...</echo>
+    <target name="test" depends="build" description="Compiling and testing">
+        <echo>Creating reports directory...</echo>
         <mkdir dir="${test.report.dir}"/>
-        <echo>Исполнение тестов...</echo>
+        <echo>Executing tests...</echo>
         <junitlauncher printsummary="true" haltonfailure="true">
             <classpath>
                 <path refid="lib.test.path"/>
@@ -152,7 +152,7 @@
         </junitlauncher>
     </target>
 
-    <target name="music" description="Воспроизведение музыки после сборки war-файла">
+    <target name="music" description="Music after build">
         <sound>
             <success source="${music.success.file}"/>
             <fail source="${music.fail.file}"/>
