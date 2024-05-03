@@ -75,16 +75,16 @@
             <classpath refid="lib.main.path"/>
         </javac>
 
-<!--        <echo>Компиляция тестов...</echo>-->
-<!--        <mkdir dir="${test.dir}"/>-->
-<!--        <javac srcdir="${src.test.dir}"-->
-<!--               destdir="${test.dir}"-->
-<!--               includeantruntime="false">-->
-<!--            <classpath>-->
-<!--                <path refid="lib.test.path"/>-->
-<!--                <pathelement location="${build.classes.dir}"/>-->
-<!--            </classpath>-->
-<!--        </javac>-->
+        <!--        <echo>Компиляция тестов...</echo>-->
+        <!--        <mkdir dir="${test.dir}"/>-->
+        <!--        <javac srcdir="${src.test.dir}"-->
+        <!--               destdir="${test.dir}"-->
+        <!--               includeantruntime="false">-->
+        <!--            <classpath>-->
+        <!--                <path refid="lib.test.path"/>-->
+        <!--                <pathelement location="${build.classes.dir}"/>-->
+        <!--            </classpath>-->
+        <!--        </javac>-->
     </target>
 
     <target name="build" depends="compile" description="Создание war-файла">
@@ -261,36 +261,48 @@
         </if>
     </target>
 
-    <target name="team" description="Получение из git-репозитория 2 предыдущих ревизии, их сборка и упаковка в zip-архив">
-        <echo>Создание временной директории для файлов ревизий...</echo>
-        <tempfile property="temp.dir" destdir="${java.io.tmpdir}" prefix="ant"/>
+    <target name="team">
+        <!--        <for param="i" begin="1" end="4">
+                    <sequential>-->
+        <property name="war" value="${build.dir}/${ant.project.name}.war"/>
+        <delete dir="${temp.dir}"/>
+
         <mkdir dir="${temp.dir}"/>
 
-        <for param="i" begin="1" end="2">
-            <sequential>
-                <echo>Ревизия #@{i}:</echo>
-                <echo>Копирование файлов ревизии во временную директорию...</echo>
-                <git-copy-commit commit="HEAD~@{i}" dest="${temp.dir}/@{i}.zip"/>
-                <unzip src="${temp.dir}/@{i}.zip" dest="${temp.dir}"/>
+        <echo>Ревизия #1:</echo>
+        <exec executable="${svn.executable}">
+            <arg line="checkout -r HEAD:HEAD~3 ${svn.repository.url} ${temp.dir}"/>
+        </exec>
+        <antcall target="build"/>
+        <!--                 <mkdir dir="${temp.dir}/r1"/> -->
+        <copy file="${war}" tofile="${temp.dir}/r1/${war}"/>
 
-                <echo>Сборка war-архива...</echo>
-                <ant antfile="${ant.file}" target="build" dir="${temp.dir}"/>
-                <copy file="${temp.dir}/build/${ant.project.name}.war"
-                      tofile="${temp.dir}/${ant.project.name}-Prev@{i}.war"/>
+        <echo>Ревизия #2:</echo>
+        <exec executable="${svn.executable}">
+            <arg line="checkout -r HEAD:HEAD~2 ${svn.repository.url} ${temp.dir}"/>
+        </exec>
+        <antcall target="build"/>
+        <copy file="${war}" tofile="${temp.dir}/r2/${war}"/>
 
-                <echo>Очистка файлов ревизии во временной директории...</echo>
-                <delete>
-                    <fileset dir="${temp.dir}">
-                        <exclude name="*.war"/>
-                    </fileset>
-                </delete>
-            </sequential>
-        </for>
+        <echo>Ревизия #3:</echo>
+        <exec executable="${svn.executable}">
+            <arg line="checkout -r HEAD:HEAD~1 ${svn.repository.url} ${temp.dir}"/>
+        </exec>
+        <antcall target="build"/>
+        <copy file="${war}" tofile="${temp.dir}/r3/${war}"/>
 
-        <echo>Упаковка собранных war-архивов в zip-архив...</echo>
-        <zip destfile="${build.dir}/${ant.project.name}-Team.zip"
-             basedir="${temp.dir}"
-             includes="*.war"/>
+        <echo>Ревизия #4:</echo>
+        <exec executable="${svn.executable}">
+            <arg line="checkout -r HEAD:HEAD ${svn.repository.url} ${temp.dir}"/>
+        </exec>
+        <antcall target="build"/>
+        <copy file="${war}" tofile="${temp.dir}/r4/${war}"/>
+
+        <zip destfile="${output.zip}">
+            <fileset dir="${temp.dir}"/>
+        </zip>
+        <!--            </sequential>
+                </for>-->
     </target>
 
     <target name="alt" description="Создание версии программы с измененными именами переменных и классов по указанному регулярному выражению">
