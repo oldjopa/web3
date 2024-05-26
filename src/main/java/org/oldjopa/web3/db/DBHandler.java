@@ -1,14 +1,12 @@
-package db;
+package org.oldjopa.web3.db;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-import utils.CheckResult;
+import org.oldjopa.web3.utils.CheckResult;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class DBHandler {

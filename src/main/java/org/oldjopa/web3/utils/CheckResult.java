@@ -1,4 +1,4 @@
-package utils;
+package org.oldjopa.web3.utils;
 
 
 import java.io.Serializable;
@@ -9,9 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-import static utils.GraphHitChecker.checkHit;
 
 @Entity
 //@Table(name = "CheckResults")
@@ -27,6 +24,7 @@ public class CheckResult implements Serializable {
     private Float x;
     private Float y;
     private Float r;
+    private long timeClick;
 
     public CheckResult() {
     }
@@ -37,10 +35,11 @@ public class CheckResult implements Serializable {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         timeAccess = currentDateTime.format(formatter);
+        timeClick = System.currentTimeMillis();
         this.x = point.getX();
         this.y = point.getY();
         this.r = point.getR();
-        hit = checkHit(x, y, r);
+        hit = GraphHitChecker.checkHit(x, y, r);
         timeExecution = (System.nanoTime() - timeStart) / 1000;
     }
 
@@ -87,6 +86,10 @@ public class CheckResult implements Serializable {
 
     public String getTimeAccess() {
         return timeAccess;
+    }
+
+    public long getTimeClick() {
+        return timeClick;
     }
 
     public void setTimeAccess(String timeAccess) {

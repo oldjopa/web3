@@ -23,15 +23,15 @@
         </navigation-case>
     </navigation-rule>
 
-    <managed-bean>
-        <managed-bean-name>results</managed-bean-name>
-        <managed-bean-class>beans.CheckResults</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
+<!--    <managed-bean>-->
+<!--        <managed-bean-name>results</managed-bean-name>-->
+<!--        <managed-bean-class>org.oldjopa.web3.beans.CheckResults</managed-bean-class>-->
+<!--        <managed-bean-scope>session</managed-bean-scope>-->
+<!--    </managed-bean>-->
 
-    <managed-bean>
-        <managed-bean-name>mapper</managed-bean-name>
-        <managed-bean-class>beans.Mapper</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
+<!--    <managed-bean>-->
+<!--        <managed-bean-name>mapper</managed-bean-name>-->
+<!--        <managed-bean-class>org.oldjopa.web3.beans.Mapper</managed-bean-class>-->
+<!--        <managed-bean-scope>session</managed-bean-scope>-->
+<!--    </managed-bean>-->
 </faces-config>

@@ -1,17 +1,22 @@
-package beans;
+package org.oldjopa.web3.beans;
 
-import db.DBHandler;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.annotation.ManagedBean;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
+import org.oldjopa.web3.db.DBHandler;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
-import utils.CheckResult;
-import utils.Point;
+import org.oldjopa.web3.jmx.MeanIntervalStatistics;
+import org.oldjopa.web3.jmx.MeanIntervalStatisticsMXBean;
+import org.oldjopa.web3.jmx.PointStatisticsMXBean;
+import org.oldjopa.web3.utils.CheckResult;
+import org.oldjopa.web3.utils.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 @Named("results")
-@SessionScoped
+@ManagedBean
+@ApplicationScoped
 public class CheckResults implements Serializable {
     private ArrayList<CheckResult> results = DBHandler.getResults();
     private Point point = new Point();
@@ -39,5 +44,15 @@ public class CheckResults implements Serializable {
     public void clear(){
         results.clear();
         DBHandler.clearResults();
+    }
+
+//    @Override
+    public long getHitsCounter() {
+        return results.stream().filter(CheckResult::getHit).count();
+    }
+
+//    @Override
+    public long getPointCounter() {
+        return results.size();
     }
 }

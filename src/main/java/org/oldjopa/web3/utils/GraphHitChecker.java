@@ -1,4 +1,4 @@
-package utils;
+package org.oldjopa.web3.utils;
 
 public class GraphHitChecker {
     public static boolean checkHit(float x, float y, float r){

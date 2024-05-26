@@ -1,4 +1,4 @@
-package beans;
+package org.oldjopa.web3.beans;
 
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Named("mapper")
 @SessionScoped
-class Mapper implements Serializable {
+public class Mapper implements Serializable {
     private String currentPage = "clock";
 
     public String remap(String s) {

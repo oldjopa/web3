@@ -4,7 +4,7 @@ import static java.lang.Math.sqrt;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import static utils.GraphHitChecker.checkHit;
+import static org.oldjopa.web3.utils.GraphHitChecker.checkHit;
 
 public class GraphTest {
     @Test

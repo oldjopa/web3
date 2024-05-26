@@ -1,4 +1,4 @@
-package utils;
+package org.oldjopa.web3.utils;
 
 import java.io.Serializable;
 

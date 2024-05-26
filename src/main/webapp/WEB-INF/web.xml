@@ -19,4 +19,8 @@
     <welcome-file>clock.xhtml</welcome-file>
   </welcome-file-list>
 
+  <listener>
+    <listener-class>org.oldjopa.web3.listners.MXBeanServer</listener-class>
+  </listener>
+
 </web-app>
