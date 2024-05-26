@@ -136,12 +136,11 @@
                 <pathelement location="${build.classes.dir}"/>
                 <pathelement location="${test.dir}"/>
             </classpath>
-
             <testclasses outputdir="${test.report.dir}">
                 <fileset dir="${test.dir}">
                     <include name="**/*Test*.class"/>
                 </fileset>
-                <listener type="legacy-plain"
+                <listener type="legacy-xml"
                           sendSysOut="true"
                           sendSysErr="true"/>
                 <fork/>
@@ -159,22 +158,22 @@
     </target>
 
     <target name="scp" depends="build" description="build and move war to server via scp">
-        <input message="Password: " addproperty="scp.password">
-            <handler type="secure"/>
-        </input>
-        <trycatch>
-            <try>
+<!--        <input message="Password: " addproperty="scp.password">-->
+<!--            <handler type="secure"/>-->
+<!--        </input>-->
+<!--        <trycatch>-->
+<!--            <try>-->
                 <echo>Connecting...</echo>
                 <scp file="${build.dir}/${ant.project.name}.war"
                      todir="${scp.user}@${scp.host}:${scp.dir}"
                      password="${scp.password}"
                      port="${scp.port}"
                      trust="true"/>
-            </try>
-            <catch>
-                <fail message="Failed to connect to server"/>
-            </catch>
-        </trycatch>
+<!--            </try>-->
+<!--            <catch>-->
+<!--                <fail message="Failed to connect to server"/>-->
+<!--            </catch>-->
+<!--        </trycatch>-->
     </target>
 
     <target name="native2ascii" description="Преобразование native2ascii для копий файлов локализации">
@@ -184,20 +183,13 @@
     </target>
 
     <target name="env" depends="scp" description="build and move war to server via scp, web server start">
-        <trycatch>
-            <try>
-                <echo>Starting web server...</echo>
-                <sshexec host="${scp.host}"
-                         username="${scp.user}"
-                         password="${scp.password}"
-                         port="${scp.port}"
-                         trust="true"
-                         command="sh ${env.script}"/>
-            </try>
-            <catch>
-                <fail message="Failed to connect to server"/>
-            </catch>
-        </trycatch>
+        <echo>Starting web server...</echo>
+        <sshexec host="${scp.host}"
+                 username="${scp.user}"
+                 password="${scp.password}"
+                 port="${scp.port}"
+                 trust="true"
+                 command="sh ${env.script}"/>
     </target>
 
     <target name="xml" description="Проверка валидности xml">
@@ -205,32 +197,6 @@
         <xmlvalidate lenient="yes">
             <fileset dir="." includes="*/*.xml"/>
         </xmlvalidate>
-    </target>
-
-    <target name="diff" description="Совершение коммита в репозиторий svn, если изменения не касаются указанных классов">
-        <echo>Получение списка измененных файлов...</echo>
-        <svn-status outputproperty="diff.status"/>
-        <echo>Поиск изменений в указанных классах...</echo>
-        <for param="class" list="${diff.classes}" delimiter=" ">
-            <sequential>
-                <condition property="commit">
-                    <not>
-                        <contains string="${diff.status}"
-                                  substring="@{class}.java"/>
-                    </not>
-                </condition>
-            </sequential>
-        </for>
-        <if>
-            <isset property="commit"/>
-            <then>
-                <echo>Изменения не были найдены: выполнение коммита...</echo>
-                <svn-commit/>
-            </then>
-            <else>
-                <echo>Изменения были найдены: завершение...</echo>
-            </else>
-        </if>
     </target>
 
     <target name="team">
@@ -314,10 +280,9 @@
     </target>
 
     <target name="report" depends="test" description="If all test pass then create junit, git add and commit">
-        <!--        <mkdir dir="${doc.dir}"/>-->
         <mkdir dir="${doc.report.dir}"/>
         <copy todir="${doc.report.dir}">
-            <fileset dir="${test.dir}" includes="*.txt"/>
+            <fileset dir="${test.dir}" includes="*.xml"/>
         </copy>
         <sequential>
             <exec executable="git">

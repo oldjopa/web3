@@ -15,7 +15,7 @@ public class GraphTest {
 
     @Test
     void checkIfOnSector() {
-        assertTrue(checkHit(0.5f,-0.5f,1));
+        assertTrue(checkHit(-0.5f,-0.5f,1));
     }
 
     @Test
