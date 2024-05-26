@@ -12,7 +12,7 @@ import java.util.Map;
 
 
 public class DBHandler {
-    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("CheckResult");;
+    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("CheckResult");
     static {
 
     }
